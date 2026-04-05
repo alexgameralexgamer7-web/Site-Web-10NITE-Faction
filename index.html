@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recrutement 10NITE Faction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #111827;
+      padding: 30px;
+      border-radius: 15px;
+      width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #38bdf8;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: none;
+      background: #1f2937;
+      color: white;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #22c55e;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #16a34a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>10NITE Faction</h1>
+    <form onsubmit="sendForm(event)">
+
+      <label>Pseudo Paladium</label>
+      <input id="pseudo" type="text" required>
+
+      <label>Âge</label>
+      <input id="age" type="number" min="10" max="99" maxlength="2" required oninput="this.value = this.value.slice(0,2)">
+
+      <label>Discord</label>
+      <input id="discord" type="text" placeholder="Pseudo" required>
+
+      <label>Rôle sur Paladium</label>
+      <select id="role" required>
+        <option value="">-- Choisir --</option>
+        <option>Farmeur</option>
+        <option>Pilleur</option>
+        <option>Builder</option>
+      </select>
+
+      <label>Que ferais-tu en cas de pillage sur la base ?</label>
+      <select id="pillage" required>
+        <option value="">-- Choisir --</option>
+        <option>Prévenir le serveur discord puis attaquer le wither et les joueurs</option>
+        <option>Attaquer le wither ou les joueurs</option>
+      </select>
+
+      <label>Pourquoi rejoindre cette Faction et pas une autre ?</label>
+      <textarea id="motivation" required></textarea>
+
+      <button type="submit">Envoyer la candidature</button>
+    </form>
+  </div>
+
+  <script>
+    const webhookURL = "https://discord.com/api/webhooks/1490409580910608445/8vmqps_OxmINl7cUFm3UyaEODrg2l_1nc6EwUqUUMWBvai7kme3I4gc0Quj_uvJpgkvs";
+
+    function sendForm(e) {
+      e.preventDefault();
+
+      const pseudo = document.getElementById("pseudo").value;
+      const age = document.getElementById("age").value;
+      const discord = document.getElementById("discord").value;
+      const role = document.getElementById("role").value;
+      const pillage = document.getElementById("pillage").value;
+      const motivation = document.getElementById("motivation").value;
+
+      const data = {
+        embeds: [{
+          title: "📩 Nouvelle candidature 10NITE",
+          color: 3447003,
+          fields: [
+            { name: "👤 Pseudo", value: pseudo, inline: true },
+            { name: "🎂 Âge", value: age, inline: true },
+            { name: "💬 Discord", value: discord, inline: true },
+            { name: "🎮 Rôle", value: role, inline: false },
+            { name: "⚔️ Réaction en cas de pillage", value: pillage, inline: false },
+            { name: "🔥 Motivation", value: motivation, inline: false }
+          ],
+          footer: {
+            text: "10NITE Faction Recrutement"
+          }
+        }]
+      };
+
+      fetch(webhookURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        alert("Candidature envoyée sur Discord !");
+      })
+      .catch(() => {
+        alert("Erreur lors de l'envoi.");
+      });
+    }
+  </script>
+</body>
+</html>
