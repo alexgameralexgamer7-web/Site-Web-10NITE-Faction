@@ -62,12 +62,29 @@
       background: #6b7280;
       cursor: not-allowed;
     }
+    .anti-spam-badge {
+      background: #7c2d12;
+      border: 1px solid #ea580c;
+      border-radius: 20px;
+      padding: 8px 15px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fdba74;
+    }
+    .anti-spam-badge span {
+      color: #f97316;
+      font-size: 18px;
+      margin-right: 5px;
+    }
     .timer-text {
       text-align: center;
       margin-top: 10px;
       font-size: 14px;
       color: #fbbf24;
       display: none;
+      font-weight: bold;
     }
     .error-message {
       background: #7f1d1d;
@@ -88,9 +105,9 @@
       font-size: 14px;
     }
     .cooldown-bar {
-      height: 4px;
+      height: 6px;
       background: #374151;
-      border-radius: 2px;
+      border-radius: 3px;
       margin-top: 10px;
       overflow: hidden;
       display: none;
@@ -98,29 +115,40 @@
     .cooldown-progress {
       width: 0%;
       height: 100%;
-      background: #22c55e;
+      background: #f97316;
       transition: width 0.1s linear;
+    }
+    .info-text {
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>10NITE Faction</h1>
+    <h1>🔫 10NITE Faction</h1>
+    
+    <!-- BANNEAU ANTI-SPAM VISIBLE -->
+    <div class="anti-spam-badge">
+      <span>🛡️</span> ANTI-SPAM : 60 secondes de délai entre chaque candidature <span>⏱️</span>
+    </div>
     
     <div id="errorMessage" class="error-message"></div>
     <div id="successMessage" class="success-message"></div>
     
     <form id="candidatureForm">
-      <label>Pseudo Paladium</label>
-      <input id="pseudo" type="text" required>
+      <label>👤 Pseudo Paladium</label>
+      <input id="pseudo" type="text" required placeholder="Votre pseudo">
 
-      <label>Âge</label>
-      <input id="age" type="number" min="10" max="99" maxlength="2" required oninput="this.value = this.value.slice(0,2)">
+      <label>🎂 Âge</label>
+      <input id="age" type="number" min="10" max="99" maxlength="2" required oninput="this.value = this.value.slice(0,2)" placeholder="10-99 ans">
 
-      <label>Discord</label>
-      <input id="discord" type="text" placeholder="Pseudo" required>
+      <label>💬 Discord</label>
+      <input id="discord" type="text" placeholder="Pseudo#1234" required>
 
-      <label>Rôle sur Paladium</label>
+      <label>🎮 Rôle sur Paladium</label>
       <select id="role" required>
         <option value="">-- Choisir --</option>
         <option>Farmeur</option>
@@ -128,56 +156,51 @@
         <option>Builder</option>
       </select>
 
-      <label>Que ferais-tu en cas de pillage sur la base ?</label>
+      <label>⚔️ Que ferais-tu en cas de pillage sur la base ?</label>
       <select id="pillage" required>
         <option value="">-- Choisir --</option>
         <option>Prévenir le serveur discord puis attaquer le wither et les joueurs</option>
         <option>Attaquer le wither ou les joueurs</option>
       </select>
 
-      <label>Pourquoi rejoindre cette Faction et pas une autre ?</label>
-      <textarea id="motivation" required></textarea>
+      <label>🔥 Pourquoi rejoindre cette Faction et pas une autre ?</label>
+      <textarea id="motivation" required placeholder="Expliquez votre motivation..."></textarea>
 
-      <button type="submit" id="submitBtn">Envoyer la candidature</button>
+      <button type="submit" id="submitBtn">📩 Envoyer la candidature</button>
       <div id="timerText" class="timer-text"></div>
       <div id="cooldownBar" class="cooldown-bar">
         <div id="cooldownProgress" class="cooldown-progress"></div>
       </div>
+      <div class="info-text">⏳ Une candidature toutes les 60 secondes maximum</div>
     </form>
   </div>
 
   <script>
     const webhookURL = "https://discord.com/api/webhooks/1490409580910608445/8vmqps_OxmINl7cUFm3UyaEODrg2l_1nc6EwUqUUMWBvai7kme3I4gc0Quj_uvJpgkvs";
     
-    // Configuration du cooldown (en secondes)
-    const COOLDOWN_SECONDS = 60; // 1 minute d'attente entre chaque candidature
-    
-    // Clé pour stocker le timestamp du dernier envoi dans localStorage
+    // Configuration du cooldown (60 secondes)
+    const COOLDOWN_SECONDS = 60;
     const STORAGE_KEY = "10nite_last_submission_time";
     
     let cooldownInterval = null;
     let remainingSeconds = 0;
     let isSubmitting = false;
 
-    // Fonction pour obtenir le timestamp du dernier envoi
     function getLastSubmissionTime() {
       const stored = localStorage.getItem(STORAGE_KEY);
       return stored ? parseInt(stored) : 0;
     }
 
-    // Fonction pour sauvegarder le timestamp du dernier envoi
     function setLastSubmissionTime() {
       localStorage.setItem(STORAGE_KEY, Date.now());
     }
 
-    // Fonction pour vérifier si on est en cooldown
     function isInCooldown() {
       const lastTime = getLastSubmissionTime();
       const now = Date.now();
       return (now - lastTime) < (COOLDOWN_SECONDS * 1000);
     }
 
-    // Fonction pour obtenir le temps restant en secondes
     function getRemainingCooldownSeconds() {
       const lastTime = getLastSubmissionTime();
       const now = Date.now();
@@ -186,14 +209,11 @@
       return Math.ceil(remaining);
     }
 
-    // Fonction pour formater le temps (mm:ss)
     function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
+      return `${secs} secondes`;
     }
 
-    // Fonction pour mettre à jour l'interface du cooldown
     function updateCooldownDisplay() {
       const submitBtn = document.getElementById("submitBtn");
       const timerText = document.getElementById("timerText");
@@ -205,33 +225,34 @@
         const progressPercent = (remaining / COOLDOWN_SECONDS) * 100;
         
         submitBtn.disabled = true;
+        submitBtn.textContent = "⏳ Délai anti-spam en cours...";
         timerText.style.display = "block";
         cooldownBar.style.display = "block";
-        timerText.innerHTML = `⏳ Veuillez patienter ${formatTime(remaining)} avant une nouvelle candidature ⏳`;
+        timerText.innerHTML = `🛡️ ANTI-SPAM : Veuillez patienter ${formatTime(remaining)} avant une nouvelle candidature ⏳`;
         cooldownProgress.style.width = `${100 - progressPercent}%`;
         
         remainingSeconds = remaining;
         
-        // Démarrer le compte à rebours si pas déjà en cours
         if (!cooldownInterval) {
           cooldownInterval = setInterval(() => {
             if (remainingSeconds <= 1) {
-              // Fin du cooldown
               clearInterval(cooldownInterval);
               cooldownInterval = null;
               submitBtn.disabled = false;
+              submitBtn.textContent = "📩 Envoyer la candidature";
               timerText.style.display = "none";
               cooldownBar.style.display = "none";
             } else {
               remainingSeconds--;
               const newProgress = (remainingSeconds / COOLDOWN_SECONDS) * 100;
-              timerText.innerHTML = `⏳ Veuillez patienter ${formatTime(remainingSeconds)} avant une nouvelle candidature ⏳`;
+              timerText.innerHTML = `🛡️ ANTI-SPAM : Veuillez patienter ${formatTime(remainingSeconds)} avant une nouvelle candidature ⏳`;
               cooldownProgress.style.width = `${100 - newProgress}%`;
             }
           }, 1000);
         }
       } else {
         submitBtn.disabled = false;
+        submitBtn.textContent = "📩 Envoyer la candidature";
         timerText.style.display = "none";
         cooldownBar.style.display = "none";
         if (cooldownInterval) {
@@ -241,12 +262,10 @@
       }
     }
 
-    // Fonction pour afficher un message temporaire
     function showMessage(type, text) {
       const errorDiv = document.getElementById("errorMessage");
       const successDiv = document.getElementById("successMessage");
       
-      // Cacher les deux
       errorDiv.style.display = "none";
       successDiv.style.display = "none";
       
@@ -258,7 +277,6 @@
         successDiv.style.display = "block";
       }
       
-      // Auto-cacher après 5 secondes
       setTimeout(() => {
         if (type === "error") {
           errorDiv.style.display = "none";
@@ -268,7 +286,6 @@
       }, 5000);
     }
 
-    // Fonction pour valider l'âge
     function validateAge(age) {
       const ageNum = parseInt(age);
       if (isNaN(ageNum) || ageNum < 10 || ageNum > 99) {
@@ -277,35 +294,21 @@
       return true;
     }
 
-    // Fonction pour valider le pseudo Discord (minimum 2 caractères)
-    function validateDiscord(discord) {
-      return discord && discord.trim().length >= 2;
-    }
-
-    // Fonction pour valider le pseudo
-    function validatePseudo(pseudo) {
-      return pseudo && pseudo.trim().length >= 2;
-    }
-
-    // Fonction pour envoyer le formulaire avec anti-spam
     async function sendForm(event) {
       event.preventDefault();
       
-      // Vérifier si déjà en cours d'envoi
       if (isSubmitting) {
         showMessage("error", "⏳ Envoi en cours, veuillez patienter...");
         return;
       }
       
-      // Vérifier le cooldown
       if (isInCooldown()) {
         const remaining = getRemainingCooldownSeconds();
-        showMessage("error", `⚠️ Veuillez patienter ${formatTime(remaining)} avant d'envoyer une nouvelle candidature. ⚠️`);
+        showMessage("error", `🛡️ ANTI-SPAM : Veuillez patienter ${formatTime(remaining)} avant d'envoyer une nouvelle candidature.`);
         updateCooldownDisplay();
         return;
       }
       
-      // Récupérer les valeurs
       const pseudo = document.getElementById("pseudo").value.trim();
       const age = document.getElementById("age").value.trim();
       const discord = document.getElementById("discord").value.trim();
@@ -313,9 +316,8 @@
       const pillage = document.getElementById("pillage").value;
       const motivation = document.getElementById("motivation").value.trim();
       
-      // Validation côté client
-      if (!validatePseudo(pseudo)) {
-        showMessage("error", "❌ Veuillez entrer un pseudo valide (au moins 2 caractères).");
+      if (pseudo.length < 2) {
+        showMessage("error", "❌ Veuillez entrer un pseudo valide.");
         return;
       }
       
@@ -324,7 +326,7 @@
         return;
       }
       
-      if (!validateDiscord(discord)) {
+      if (discord.length < 2) {
         showMessage("error", "❌ Veuillez entrer un pseudo Discord valide.");
         return;
       }
@@ -344,11 +346,6 @@
         return;
       }
       
-      if (motivation.length > 1000) {
-        showMessage("error", "❌ La motivation ne peut pas dépasser 1000 caractères.");
-        return;
-      }
-      
       isSubmitting = true;
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
@@ -363,11 +360,11 @@
             { name: "🎂 Âge", value: age, inline: true },
             { name: "💬 Discord", value: discord.substring(0, 100), inline: true },
             { name: "🎮 Rôle", value: role, inline: false },
-            { name: "⚔️ Réaction en cas de pillage", value: pillage, inline: false },
+            { name: "⚔️ Réaction pillage", value: pillage, inline: false },
             { name: "🔥 Motivation", value: motivation.substring(0, 1024), inline: false }
           ],
           footer: {
-            text: "10NITE Faction Recrutement - " + new Date().toLocaleString()
+            text: "🛡️ 10NITE Faction - Anti-spam 60 secondes"
           }
         }]
       };
@@ -382,78 +379,30 @@
         });
         
         if (response.ok) {
-          // Succès : sauvegarder le timestamp et démarrer le cooldown
           setLastSubmissionTime();
-          showMessage("success", "✅ Candidature envoyée avec succès ! Vous pourrez en envoyer une nouvelle dans " + COOLDOWN_SECONDS + " secondes.");
-          
-          // Réinitialiser le formulaire
+          showMessage("success", "✅ Candidature envoyée ! Anti-spam : 60 secondes d'attente avant la prochaine.");
           document.getElementById("candidatureForm").reset();
-          
-          // Mettre à jour l'affichage du cooldown
           updateCooldownDisplay();
         } else {
-          const errorText = await response.text();
-          console.error("Erreur webhook:", errorText);
-          showMessage("error", "❌ Erreur lors de l'envoi à Discord. Code: " + response.status);
+          showMessage("error", "❌ Erreur lors de l'envoi. Réessayez.");
         }
       } catch (error) {
-        console.error("Erreur réseau:", error);
-        showMessage("error", "❌ Erreur de connexion. Vérifiez votre réseau.");
+        showMessage("error", "❌ Erreur de connexion.");
       } finally {
         isSubmitting = false;
-        submitBtn.disabled = isInCooldown();
-        submitBtn.textContent = "Envoyer la candidature";
+        if (!isInCooldown()) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "📩 Envoyer la candidature";
+        }
       }
     }
     
-    // Attacher l'événement au formulaire
     const form = document.getElementById("candidatureForm");
     form.addEventListener("submit", sendForm);
     
-    // Vérifier l'état du cooldown au chargement de la page
     document.addEventListener("DOMContentLoaded", () => {
       updateCooldownDisplay();
     });
-    
-    // Sauvegarde des données du formulaire en cas de rafraîchissement (optionnel)
-    function saveFormData() {
-      const formData = {
-        pseudo: document.getElementById("pseudo").value,
-        age: document.getElementById("age").value,
-        discord: document.getElementById("discord").value,
-        role: document.getElementById("role").value,
-        pillage: document.getElementById("pillage").value,
-        motivation: document.getElementById("motivation").value
-      };
-      localStorage.setItem("10nite_form_backup", JSON.stringify(formData));
-    }
-    
-    function restoreFormData() {
-      const saved = localStorage.getItem("10nite_form_backup");
-      if (saved) {
-        try {
-          const data = JSON.parse(saved);
-          if (data.pseudo) document.getElementById("pseudo").value = data.pseudo;
-          if (data.age) document.getElementById("age").value = data.age;
-          if (data.discord) document.getElementById("discord").value = data.discord;
-          if (data.role) document.getElementById("role").value = data.role;
-          if (data.pillage) document.getElementById("pillage").value = data.pillage;
-          if (data.motivation) document.getElementById("motivation").value = data.motivation;
-        } catch(e) {}
-      }
-    }
-    
-    // Sauvegarder automatiquement les données
-    const inputs = ["pseudo", "age", "discord", "role", "pillage", "motivation"];
-    inputs.forEach(id => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.addEventListener("input", saveFormData);
-        element.addEventListener("change", saveFormData);
-      }
-    });
-    
-    restoreFormData();
   </script>
 </body>
 </html>
