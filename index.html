@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recrutement 10NITE Faction</title>
+  <title>Recrutement 10NITE Faction - Paladium</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,18 +20,26 @@
       background: #111827;
       padding: 30px;
       border-radius: 15px;
-      width: 400px;
+      width: 500px;
       max-width: 100%;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
     h1 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 5px;
       color: #38bdf8;
+    }
+    .subtitle {
+      text-align: center;
+      color: #9ca3af;
+      font-size: 14px;
+      margin-bottom: 20px;
     }
     label {
       display: block;
-      margin-top: 10px;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #e5e7eb;
     }
     input, textarea, select {
       width: 100%;
@@ -43,8 +51,12 @@
       color: white;
       box-sizing: border-box;
     }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
     button {
-      margin-top: 20px;
+      margin-top: 25px;
       width: 100%;
       padding: 12px;
       border: none;
@@ -54,6 +66,7 @@
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s;
+      font-size: 16px;
     }
     button:hover:not(:disabled) {
       background: #16a34a;
@@ -124,11 +137,19 @@
       color: #9ca3af;
       margin-top: 15px;
     }
+    hr {
+      border-color: #374151;
+      margin: 15px 0;
+    }
+    .required-star {
+      color: #ef4444;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🔫 10NITE Faction</h1>
+    <div class="subtitle">Recrutement Paladium - Rejoins l'élite !</div>
     
     <!-- BANNEAU ANTI-SPAM VISIBLE -->
     <div class="anti-spam-badge">
@@ -139,39 +160,101 @@
     <div id="successMessage" class="success-message"></div>
     
     <form id="candidatureForm">
-      <label>👤 Pseudo Paladium</label>
-      <input id="pseudo" type="text" required placeholder="Votre pseudo">
+      <label>👤 Pseudo Paladium <span class="required-star">*</span></label>
+      <input id="pseudo" type="text" required placeholder="Ex: Xx_Fighter_xX">
 
-      <label>🎂 Âge</label>
-      <input id="age" type="number" min="10" max="99" maxlength="2" required oninput="this.value = this.value.slice(0,2)" placeholder="10-99 ans">
+      <label>🎂 Âge <span class="required-star">*</span></label>
+      <input id="age" type="number" min="10" max="99" required oninput="this.value = this.value.slice(0,2)" placeholder="10-99 ans">
 
-      <label>💬 Discord</label>
+      <label>💬 Discord <span class="required-star">*</span></label>
       <input id="discord" type="text" placeholder="Pseudo#1234" required>
 
-      <label>🎮 Rôle sur Paladium</label>
+      <label>⏱️ Depuis combien de temps joues-tu sur Paladium ? <span class="required-star">*</span></label>
+      <select id="experience" required>
+        <option value="">-- Choisir --</option>
+        <option>Moins d'1 mois</option>
+        <option>1 à 3 mois</option>
+        <option>3 à 6 mois</option>
+        <option>6 mois à 1 an</option>
+        <option>Plus d'1 an</option>
+        <option>Plus de 2 ans</option>
+      </select>
+
+      <label>🎮 Quel est ton niveau / grade sur Paladium ? <span class="required-star">*</span></label>
+      <select id="grade" required>
+        <option value="">-- Choisir --</option>
+        <option>Débutant (Grade 1-10)</option>
+        <option>Intermédiaire (Grade 11-30)</option>
+        <option>Confirmé (Grade 31-60)</option>
+        <option>Expert (Grade 61-90)</option>
+        <option>Légende (Grade 91+)</option>
+      </select>
+
+      <label>⚔️ Quel est ton rôle principal sur Paladium ? <span class="required-star">*</span></label>
       <select id="role" required>
         <option value="">-- Choisir --</option>
         <option>Farmeur</option>
         <option>Pilleur</option>
         <option>Builder</option>
+        <option>PvP</option>
+        <option>Mineur</option>
+        <option>Commerçant</option>
       </select>
 
-      <label>⚔️ Que ferais-tu en cas de pillage sur la base ?</label>
+      <label>🏆 Quelle est ta meilleure statistique / ton plus grand accomplissement sur Paladium ?</label>
+      <textarea id="accomplishment" placeholder="Ex: J'ai farmé 5000 diamants, j'ai tué 100 joueurs en PvP, j'ai construit une base gigantesque..."></textarea>
+
+      <label>⚔️ Que ferais-tu en cas de pillage sur la base ? <span class="required-star">*</span></label>
       <select id="pillage" required>
         <option value="">-- Choisir --</option>
         <option>Prévenir le serveur discord puis attaquer le wither et les joueurs</option>
-        <option>Attaquer le wither ou les joueurs</option>
+        <option>Attaquer directement le wither ou les joueurs</option>
+        <option>Défendre la base coûte que coûte</option>
+        <option>Organiser une contre-attaque avec l'équipe</option>
       </select>
 
-      <label>🔥 Pourquoi rejoindre cette Faction et pas une autre ?</label>
-      <textarea id="motivation" required placeholder="Expliquez votre motivation..."></textarea>
+      <label>🛡️ As-tu déjà été dans une faction avant ? <span class="required-star">*</span></label>
+      <select id="previousFaction" required>
+        <option value="">-- Choisir --</option>
+        <option>Non, ce serait ma première</option>
+        <option>Oui, une petite faction</option>
+        <option>Oui, plusieurs factions</option>
+        <option>Oui, j'étais leader d'une faction</option>
+      </select>
+
+      <label>⏰ Combien d'heures par semaine peux-tu consacrer à Paladium ? <span class="required-star">*</span></label>
+      <select id="disponibilite" required>
+        <option value="">-- Choisir --</option>
+        <option>Moins de 5h/semaine</option>
+        <option>5-10h/semaine</option>
+        <option>10-20h/semaine</option>
+        <option>20-30h/semaine</option>
+        <option>30h+ / semaine (Hardcore)</option>
+      </select>
+
+      <label>🎙️ As-tu un micro pour communiquer sur Discord ? <span class="required-star">*</span></label>
+      <select id="micro" required>
+        <option value="">-- Choisir --</option>
+        <option>Oui, micro fonctionnel</option>
+        <option>Non, mais je peux écouter</option>
+        <option>Je peux en acheter un</option>
+      </select>
+
+      <label>🤝 Quel est ton meilleur allié sur Paladium ? (Pseudo)</label>
+      <input id="ally" type="text" placeholder="Ex: JeanFaction, Xx_Allie_xX...">
+
+      <label>💎 Quel est ton item/ressource préféré à farmer ?</label>
+      <input id="farmingItem" type="text" placeholder="Ex: Diamants, Netherite, Pommes d'or...">
+
+      <label>🔥 Pourquoi rejoindre la 10NITE Faction et pas une autre ? <span class="required-star">*</span></label>
+      <textarea id="motivation" required placeholder="Explique ta motivation en détail..."></textarea>
 
       <button type="submit" id="submitBtn">📩 Envoyer la candidature</button>
       <div id="timerText" class="timer-text"></div>
       <div id="cooldownBar" class="cooldown-bar">
         <div id="cooldownProgress" class="cooldown-progress"></div>
       </div>
-      <div class="info-text">⏳ Une candidature toutes les 60 secondes maximum</div>
+      <div class="info-text">🛡️ Anti-spam : 60 secondes d'attente | Tous les champs avec * sont obligatoires</div>
     </form>
   </div>
 
@@ -309,13 +392,23 @@
         return;
       }
       
+      // Récupération de toutes les valeurs
       const pseudo = document.getElementById("pseudo").value.trim();
       const age = document.getElementById("age").value.trim();
       const discord = document.getElementById("discord").value.trim();
+      const experience = document.getElementById("experience").value;
+      const grade = document.getElementById("grade").value;
       const role = document.getElementById("role").value;
+      const accomplishment = document.getElementById("accomplishment").value.trim();
       const pillage = document.getElementById("pillage").value;
+      const previousFaction = document.getElementById("previousFaction").value;
+      const disponibilite = document.getElementById("disponibilite").value;
+      const micro = document.getElementById("micro").value;
+      const ally = document.getElementById("ally").value.trim();
+      const farmingItem = document.getElementById("farmingItem").value.trim();
       const motivation = document.getElementById("motivation").value.trim();
       
+      // Validations
       if (pseudo.length < 2) {
         showMessage("error", "❌ Veuillez entrer un pseudo valide.");
         return;
@@ -331,13 +424,38 @@
         return;
       }
       
+      if (!experience) {
+        showMessage("error", "❌ Veuillez indiquer depuis combien de temps vous jouez sur Paladium.");
+        return;
+      }
+      
+      if (!grade) {
+        showMessage("error", "❌ Veuillez sélectionner votre grade.");
+        return;
+      }
+      
       if (!role) {
-        showMessage("error", "❌ Veuillez sélectionner un rôle.");
+        showMessage("error", "❌ Veuillez sélectionner votre rôle principal.");
         return;
       }
       
       if (!pillage) {
         showMessage("error", "❌ Veuillez sélectionner une option pour le pillage.");
+        return;
+      }
+      
+      if (!previousFaction) {
+        showMessage("error", "❌ Veuillez indiquer si vous avez déjà été en faction.");
+        return;
+      }
+      
+      if (!disponibilite) {
+        showMessage("error", "❌ Veuillez indiquer votre disponibilité.");
+        return;
+      }
+      
+      if (!micro) {
+        showMessage("error", "❌ Veuillez indiquer si vous avez un micro.");
         return;
       }
       
@@ -351,21 +469,43 @@
       submitBtn.disabled = true;
       submitBtn.textContent = "📤 Envoi en cours...";
       
+      // Construction de l'embed Discord
+      const fields = [
+        { name: "👤 Pseudo Paladium", value: pseudo.substring(0, 256), inline: true },
+        { name: "🎂 Âge", value: age, inline: true },
+        { name: "💬 Discord", value: discord.substring(0, 100), inline: true },
+        { name: "⏱️ Ancienneté Paladium", value: experience, inline: true },
+        { name: "🏆 Grade", value: grade, inline: true },
+        { name: "🎮 Rôle principal", value: role, inline: true },
+        { name: "⚔️ Réaction pillage", value: pillage, inline: false },
+        { name: "🛡️ Ancienne faction", value: previousFaction, inline: true },
+        { name: "⏰ Disponibilité", value: disponibilite, inline: true },
+        { name: "🎙️ Micro", value: micro, inline: true }
+      ];
+      
+      // Ajout des champs optionnels s'ils sont remplis
+      if (accomplishment) {
+        fields.push({ name: "🏅 Accomplissement", value: accomplishment.substring(0, 500), inline: false });
+      }
+      if (ally) {
+        fields.push({ name: "🤝 Meilleur allié", value: ally.substring(0, 100), inline: true });
+      }
+      if (farmingItem) {
+        fields.push({ name: "💎 Item préféré à farmer", value: farmingItem.substring(0, 100), inline: true });
+      }
+      
+      fields.push({ name: "🔥 Motivation", value: motivation.substring(0, 1024), inline: false });
+      
       const data = {
         embeds: [{
-          title: "📩 Nouvelle candidature 10NITE",
+          title: "📩 NOUVELLE CANDIDATURE 10NITE",
           color: 3447003,
-          fields: [
-            { name: "👤 Pseudo", value: pseudo.substring(0, 256), inline: true },
-            { name: "🎂 Âge", value: age, inline: true },
-            { name: "💬 Discord", value: discord.substring(0, 100), inline: true },
-            { name: "🎮 Rôle", value: role, inline: false },
-            { name: "⚔️ Réaction pillage", value: pillage, inline: false },
-            { name: "🔥 Motivation", value: motivation.substring(0, 1024), inline: false }
-          ],
+          description: `**${pseudo}** souhaite rejoindre la faction !`,
+          fields: fields,
           footer: {
             text: "🛡️ 10NITE Faction - Anti-spam 60 secondes"
-          }
+          },
+          timestamp: new Date().toISOString()
         }]
       };
       
@@ -380,14 +520,14 @@
         
         if (response.ok) {
           setLastSubmissionTime();
-          showMessage("success", "✅ Candidature envoyée ! Anti-spam : 60 secondes d'attente avant la prochaine.");
+          showMessage("success", "✅ Candidature envoyée avec succès ! L'équipe 10NITE vous répondra sur Discord. Anti-spam : 60 secondes d'attente.");
           document.getElementById("candidatureForm").reset();
           updateCooldownDisplay();
         } else {
-          showMessage("error", "❌ Erreur lors de l'envoi. Réessayez.");
+          showMessage("error", "❌ Erreur lors de l'envoi. Réessayez plus tard.");
         }
       } catch (error) {
-        showMessage("error", "❌ Erreur de connexion.");
+        showMessage("error", "❌ Erreur de connexion. Vérifiez votre réseau.");
       } finally {
         isSubmitting = false;
         if (!isInCooldown()) {
