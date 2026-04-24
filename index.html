@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10NITE - Recrutement</title>
+
+<style>
+* {margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+body {background: radial-gradient(circle at top, #0f172a, #020617);color:white;display:flex;justify-content:center;padding:30px 15px;}
+.container {width:600px;max-width:100%;background:rgba(15,23,42,0.9);border:1px solid rgba(56,189,248,0.2);backdrop-filter:blur(12px);border-radius:20px;padding:30px;box-shadow:0 0 40px rgba(56,189,248,0.15);} 
+h1 {text-align:center;font-size:28px;background:linear-gradient(90deg,#38bdf8,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.subtitle {text-align:center;color:#94a3b8;margin-bottom:20px;}
+label {display:block;margin-top:15px;font-size:14px;color:#cbd5f5;}
+input,select,textarea {width:100%;margin-top:6px;padding:12px;border-radius:10px;border:1px solid transparent;background:#020617;color:white;}
+textarea {min-height:70px;}
+button {width:100%;margin-top:25px;padding:14px;border-radius:12px;border:none;background:linear-gradient(90deg,#22c55e,#16a34a);color:white;font-weight:bold;cursor:pointer;}
+.section {margin-top:25px;padding-top:15px;border-top:1px solid #1e293b;}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>🔫 10NITE</h1>
+<div class="subtitle">Recrutement Faction Paladium</div>
+
+<form id="form">
+
+<label>Quel est votre pseudo Paladium ?</label>
+<input id="pseudo" required>
+
+<label>Quel âge avez-vous ?</label>
+<input id="age" type="number" required>
+
+<label>Quel est votre Discord ?</label>
+<input id="discord" required>
+
+<div class="section">
+
+<label>Quel est votre niveau d'expérience sur Paladium selon vous ?</label>
+<select id="experience" required>
+<option value="">Choisir</option>
+<option>Débutant</option>
+<option>Intermédiaire</option>
+<option>Avancé</option>
+</select>
+
+</div>
+
+<div class="section">
+
+<label>Combien d'heures jouez-vous par semaine ?</label>
+<select id="heuresJeu" required>
+  <option value="">Choisir</option>
+  <option>Moins de 5h</option>
+  <option>5-10h</option>
+  <option>10-20h</option>
+  <option>20-30h</option>
+  <option>30h+</option>
+</select>
+
+<label>Avez-vous déjà joué à la version précédente de Paladium ?</label>
+<select id="ancienneVersion" required>
+<option value="">Choisir</option>
+<option>Oui</option>
+<option>Non</option>
+</select>
+
+<label>Si oui, qu'avez-vous accompli lors de cette version ? (bases, claims, stuff...)</label>
+<textarea id="ancienneAccomplishment"></textarea>
+
+<label>Quels métiers comptez-vous monter ? (mineur, farmeur, alchimiste, hunter)</label>
+<select id="metiers" required>
+<option value="">Choisir</option>
+<option>Mineur</option>
+<option>Farmeur</option>
+<option>Alchimiste</option>
+<option>Hunter</option>
+</select>
+
+<label>Quel serait votre objectif principal pour cette saison ?</label>
+<textarea id="objectif" required></textarea>
+
+<label>Préférez-vous jouer de votre côté ou avec la faction ?</label>
+<select id="styleJeu" required>
+<option value="">Choisir</option>
+<option>De mon côté</option>
+<option>Avec la faction</option>
+</select>
+
+<label>Avez-vous déjà pillé une faction ? Si oui, combien de fois ?</label>
+<input id="nbPillages" type="number" required>
+
+<label>Savez-vous construire une base claim ?</label>
+<select id="baseClaim" required>
+<option value="">Choisir</option>
+<option>Oui</option>
+<option>Non</option>
+</select>
+
+<label>Comment évalueriez-vous votre niveau en PvP ?</label>
+<select id="niveauPvp" required>
+<option value="">Choisir</option>
+<option>Débutant</option>
+<option>Intermédiaire</option>
+<option>Bon</option>
+<option>Très fort</option>
+</select>
+
+</div>
+
+<button type="submit">📩 Envoyer</button>
+
+</form>
+</div>
+
+<script>
+const COOLDOWN = 300; // 5 minutes
+const STORAGE_KEY = "10nite_last_submit";
+const webhook = "https://discord.com/api/webhooks/1490409580910608445/8vmqps_OxmINl7cUFm3UyaEODrg2l_1nc6EwUqUUMWBvai7kme3I4gc0Quj_uvJpgkvs";
+
+const form = document.getElementById("form");
+const button = document.querySelector("button");
+
+// 🔄 Update bouton en temps réel
+function updateButton() {
+  const lastSubmit = localStorage.getItem(STORAGE_KEY);
+
+  if (!lastSubmit) {
+    button.disabled = false;
+    button.textContent = "📩 Envoyer";
+    return;
+  }
+
+  const timeDiff = (Date.now() - parseInt(lastSubmit)) / 1000;
+
+  if (timeDiff < COOLDOWN) {
+    const remaining = Math.ceil(COOLDOWN - timeDiff);
+    button.disabled = true;
+    button.textContent = "⏳ Attends " + remaining + "s";
+    setTimeout(updateButton, 1000);
+  } else {
+    button.disabled = false;
+    button.textContent = "📩 Envoyer";
+  }
+}
+
+// lancer au chargement
+updateButton();
+
+form.addEventListener("submit", async(e)=>{
+ e.preventDefault();
+
+ const lastSubmit = localStorage.getItem(STORAGE_KEY);
+
+ if (lastSubmit) {
+   const timeDiff = (Date.now() - parseInt(lastSubmit)) / 1000;
+
+   if (timeDiff < COOLDOWN) {
+     updateButton();
+     return;
+   }
+ }
+
+ const pseudo = document.getElementById("pseudo").value;
+ const age = document.getElementById("age").value;
+ const discord = document.getElementById("discord").value;
+ const heuresJeu = document.getElementById("heuresJeu").value;
+ const ancienneVersion = document.getElementById("ancienneVersion").value;
+ const ancienneAccomplishment = document.getElementById("ancienneAccomplishment").value;
+ const metiers = document.getElementById("metiers").value;
+ const objectif = document.getElementById("objectif").value;
+ const styleJeu = document.getElementById("styleJeu").value;
+ const nbPillages = document.getElementById("nbPillages").value;
+ const baseClaim = document.getElementById("baseClaim").value;
+ const niveauPvp = document.getElementById("niveauPvp").value;
+
+ const data = {
+  embeds:[{
+    title:"Nouvelle candidature 10NITE",
+    color:3447003,
+    fields:[
+      {name:"Pseudo",value:pseudo},
+      {name:"Age",value:age},
+      {name:"Discord",value:discord},
+      {name:"Heures de jeu par semaine",value:heuresJeu},
+      {name:"Version précédente",value:ancienneVersion},
+      {name:"Accomplissements",value:ancienneAccomplishment || "Aucun"},
+      {name:"Métiers",value:metiers},
+      {name:"Objectif",value:objectif},
+      {name:"Style de jeu",value:styleJeu},
+      {name:"Pillages",value:nbPillages},
+      {name:"Base Claim",value:baseClaim},
+      {name:"PvP",value:niveauPvp}
+    ]
+  }]
+ };
+
+ await fetch(webhook,{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify(data)
+ });
+
+ // active cooldown
+ localStorage.setItem(STORAGE_KEY, Date.now());
+
+ updateButton();
+
+ alert("✅ Candidature envoyée !");
+});
+</script>
+
+</body>
+</html>
